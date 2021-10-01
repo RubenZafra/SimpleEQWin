@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="uNQnAp" name="SimpleEQ" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" cppLanguageStandard="17">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" cppLanguageStandard="17"
+              companyName="Zafra Music" pluginFormats="buildAU,buildStandalone,buildVST3">
   <MAINGROUP id="XfBscy" name="SimpleEQ">
     <GROUP id="{3476F3B1-A9FC-A804-FE6D-48655B02AB87}" name="Source">
       <FILE id="MJ4fpD" name="PluginProcessor.cpp" compile="1" resource="0"
