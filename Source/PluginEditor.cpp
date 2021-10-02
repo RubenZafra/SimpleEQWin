@@ -61,6 +61,8 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 
     auto responseArea = getLocalBounds();
 
+
+
     auto w = responseArea.getWidth();
     auto& lowcut = monoChain.get<ChainPositions::LowCut>();
     auto& peak = monoChain.get<ChainPositions::Peak>();
@@ -122,11 +124,19 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 
     g.setColour(Colours::white);
     g.strokePath(responseCurve, PathStrokeType(2.f));
-}
+}; 
 
 //==============================================================================
 SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor (SimpleEQAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
+peakFreqSlider(*audioProcessor.apvts.getParameter("Peak Freq"), "Hz"),
+peakGainSlider(*audioProcessor.apvts.getParameter("Peak Gain"), "dB"),
+peakQualitySlider(*audioProcessor.apvts.getParameter("Peak Quality"), ""),
+lowCutFreqSlider(*audioProcessor.apvts.getParameter("LowCut Freq"), "Hz"),
+highCutFreqSlider(*audioProcessor.apvts.getParameter("HighCut Freq"), "Hz"),
+lowCutSlopeSlider(*audioProcessor.apvts.getParameter("LowCut Slope"), "dB/Oct"),
+highCutSlopeSlider(*audioProcessor.apvts.getParameter("HighCut Slope"), "dB/Oct"),
+
 responseCurveComponent(audioProcessor),
 peakFreqSliderAttatchment(audioProcessor.apvts, "Peak Freq", peakFreqSlider),
 peakGainSliderAttatchment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
@@ -135,8 +145,6 @@ lowCutFreqSliderAttatchment(audioProcessor.apvts, "LowCut Freq", lowCutFreqSlide
 highCutFreqSliderAttatchment(audioProcessor.apvts, "HighCut Freq", highCutFreqSlider),
 lowCutSlopeSliderAttatchment(audioProcessor.apvts, "LowCut Slope", lowCutSlopeSlider), 
 highCutSlopeSliderAttatchment(audioProcessor.apvts, "HighCut Slope", highCutSlopeSlider)
-
-
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
