@@ -38,7 +38,7 @@ struct RotarySliderWithLabels : juce::Slider
         setLookAndFeel(nullptr);
     }
 
-    struct LablePos
+    struct LabelPos
     {
         float pos;
         juce::String label;

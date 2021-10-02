@@ -110,7 +110,7 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
         jassert(0.f <= pos);
         jassert(pos <= 1.f);
 
-        auto ang = jmap(pos (), 0.f, 1.f, startAng, endAng);
+        auto ang = jmap(pos, 0.f, 1.f, startAng, endAng);
 
         auto c = center.getPointOnCircumference(radius + getTextHeight() * 0.5f + 1, ang);
 
