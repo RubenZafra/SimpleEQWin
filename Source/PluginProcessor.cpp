@@ -329,7 +329,7 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
     return new SimpleEQAudioProcessor();
 }
 
-ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
-{
-    return ChainSettings();
-}
+//ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
+//{
+//    return ChainSettings();
+//}
