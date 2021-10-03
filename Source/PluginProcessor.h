@@ -87,7 +87,7 @@ enum Channel
 template<typename BlockType>
 struct SingleChannelSampleFifo
 {
-    SingleChannelSamplefifo(Channel ch) : channelToUse(ch)
+    SingleChannelSampleFifo(Channel ch) : channelToUse(ch)
     {
         prepared.set(false);
     }
