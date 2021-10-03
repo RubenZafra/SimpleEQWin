@@ -104,7 +104,7 @@ struct SingleChannelSampleFifo
         }
     }
 
-    void prepare(inf bufferSize)
+    void prepare(int bufferSize)
     {
         prepared.set(false);
         size.set(bufferSize);
