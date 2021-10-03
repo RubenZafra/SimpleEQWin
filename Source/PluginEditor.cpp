@@ -171,7 +171,11 @@ juce::String RotarySliderWithLabels::getDisplayString() const
 //=====================================================================================================
 ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p) : 
 audioProcessor(p),
-leftChannelFifo(&audioProcessor.leftChannelFifo)
+// leftChannelFifo(&audioProcessor.leftChannelFifo)
+
+leftPathProducer(audioProcessor.leftChannelFifo),
+rightPathProducer(audioProcessor.rightChannelFifo)
+
 {
     const auto& params = audioProcessor.getParameters();
     for( auto param : params )
@@ -179,9 +183,7 @@ leftChannelFifo(&audioProcessor.leftChannelFifo)
         param->addListener(this);
     }
 
-    leftChannelFFTDataGenerator.changeOrder(FFTOrder::order2048);
-    monoBuffer.setSize(1, leftChannelFFTDataGenerator.getFFTSize());
-
+   
     updateChain();
 
     startTimer(60);
@@ -201,9 +203,9 @@ void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float new
     parametersChanged.set(true);
 };
 
-void ResponseCurveComponent::timerCallback()
-{
 
+void PathProducer::process(juce::Rectangle<float> fftBounds, double sampleRate)
+{
     juce::AudioBuffer<float> tempIncomingBuffer;
 
     while (leftChannelFifo->getNumCompleteBuffersAvailable() > 0)
@@ -224,10 +226,9 @@ void ResponseCurveComponent::timerCallback()
         }
     }
 
-    const auto fftBounds = getAnalysisArea().toFloat();
     const auto fftSize = leftChannelFFTDataGenerator.getFFTSize();
 
-    const auto binWidth = audioProcessor.getSampleRate() / (double)fftSize;
+    const auto binWidth = sampleRate / (double)fftSize;
 
     while (leftChannelFFTDataGenerator.getNumAvailableFFTDataBlocks() > 0)
     {
@@ -244,7 +245,16 @@ void ResponseCurveComponent::timerCallback()
     }
 
 
+}
 
+void ResponseCurveComponent::timerCallback()
+{
+
+    auto fftBounds = getAnalysisArea().toFloat();
+    auto sampleRate = audioProcessor.getSampleRate();
+
+    leftPathProducer.process(fftBounds, sampleRate);
+    rightPathProducer.process(fftBounds, sampleRate);
 
     if( parametersChanged.compareAndSetBool(false, true) )
     {
@@ -337,7 +347,18 @@ void ResponseCurveComponent::paint (juce::Graphics& g)
         responseCurve.lineTo(responseArea.getX() + i, map(mags[i]));
     };
 
-    g.setColour(Colours::blue);
+
+    auto leftChannelFFTPath = leftPathProducer.getPath();
+    leftChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
+
+
+    g.setColour(Colours::skyblue);
+    g.strokePath(leftChannelFFTPath, PathStrokeType(1));
+
+    auto rightChannelFFTPath = rightPathProducer.getPath();
+    rightChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
+
+    g.setColour(Colours::lightyellow);
     g.strokePath(leftChannelFFTPath, PathStrokeType(1));
 
 
